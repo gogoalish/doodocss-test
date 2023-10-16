@@ -1,16 +1,17 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gogoalish/doodocs-test/internal/api"
+	"github.com/gogoalish/doodocs-test/utils"
 )
 
 func main() {
-	// service.Pack()
-	server := api.NewServer()
-	server.Start(":8080")
-	// service.Unpack("./assets/arc.zip")
+	config, err := utils.LoadConfig("config/config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	server := api.NewServer(config)
+	server.Start()
 }
-
-// func main() {
-// 	fmt.Println(mime.TypeByExtension("xml"))
-// }

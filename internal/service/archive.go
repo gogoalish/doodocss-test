@@ -12,10 +12,6 @@ type ArchiveService interface {
 
 type Archive struct{}
 
-func NewArchive() *Archive {
-	return &Archive{}
-}
-
 type ArchiveInfo struct {
 	FileName    string      `json:"filename"`
 	ArchiveSize float64     `json:"archive_size"`

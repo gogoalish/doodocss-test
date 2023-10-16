@@ -22,3 +22,13 @@ func GetFileSize(fileName string) (float64, error) {
 	}
 	return float64(fileInfo.Size()), nil
 }
+
+func IsAllowedType(filename string, allowedTypes []string) bool {
+	filetype := DetectMimeType(filename)
+	for _, allowed := range allowedTypes {
+		if allowed == filetype {
+			return true
+		}
+	}
+	return false
+}

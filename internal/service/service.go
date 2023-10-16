@@ -2,10 +2,12 @@ package service
 
 type Service struct {
 	ArchiveService
+	FilesService
 }
 
 func NewService() *Service {
 	return &Service{
-		ArchiveService: NewArchive(),
+		ArchiveService: &Archive{},
+		FilesService:   &Files{},
 	}
 }

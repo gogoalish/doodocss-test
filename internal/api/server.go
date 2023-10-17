@@ -22,6 +22,10 @@ func NewServer(config *utils.Config) *Server {
 			archiveRoutes.POST("/information", server.archiveHandler)
 			archiveRoutes.POST("/files", server.filesHandler)
 		}
+		mailRoutes := apiRoutes.Group("/mail")
+		{
+			mailRoutes.POST("/file", server.mailHandler)
+		}
 	}
 
 	server.router = router

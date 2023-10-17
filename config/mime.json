@@ -1,0 +1,12 @@
+{
+  "for_compressing": [
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/xml",
+    "image/jpeg",
+    "image/png"
+  ],
+  "for_sending": [
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/pdf"
+  ]
+}

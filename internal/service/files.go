@@ -13,7 +13,7 @@ type FilesService interface {
 
 type Files struct{}
 
-func (files *Files) CompressFiles(filePaths, fileNames []string) (*[]byte, error) {
+func (*Files) CompressFiles(filePaths, fileNames []string) (*[]byte, error) {
 	zipBuffer := new(bytes.Buffer)
 	writer := zip.NewWriter(zipBuffer)
 

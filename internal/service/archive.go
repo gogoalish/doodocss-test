@@ -26,7 +26,7 @@ type FileInfo struct {
 	MimeType string  `json:"mimetype"`
 }
 
-func (archive *Archive) GetInformation(src, arcName string) (*ArchiveInfo, error) {
+func (*Archive) GetInformation(src, arcName string) (*ArchiveInfo, error) {
 	reader, err := zip.OpenReader(src)
 	if err != nil {
 		return nil, err

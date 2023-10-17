@@ -12,6 +12,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = utils.ParseEnv("config/credentials.env")
+	if err != nil {
+		log.Fatal(err)
+	}
 	server := api.NewServer(config)
-	server.Start()
+	log.Fatal(server.Start())
 }

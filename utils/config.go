@@ -3,6 +3,8 @@ package utils
 import (
 	"encoding/json"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -21,12 +23,15 @@ func LoadConfig(path string) (*Config, error) {
 	if err := decoder.Decode(&config); err != nil {
 		return nil, err
 	}
-
 	return config, nil
 }
 
-func LoadAllowedTypes() ([]string, error) {
-	filename := "config/mimetypes.json"
+func ParseEnv(path string) error {
+	return godotenv.Load(path)
+}
+
+func LoadAllowedTypes(dest string) ([]string, error) {
+	filename := "config/mime.json"
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -38,6 +43,5 @@ func LoadAllowedTypes() ([]string, error) {
 	if err := decoder.Decode(&config); err != nil {
 		return nil, err
 	}
-
-	return config["mime_types"], nil
+	return config[dest], nil
 }

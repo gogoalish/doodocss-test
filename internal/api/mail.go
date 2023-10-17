@@ -4,21 +4,26 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gogoalish/doodocs-test/internal/service"
 	"github.com/gogoalish/doodocs-test/utils"
 )
 
-func (server *Server) filesHandler(c *gin.Context) {
+func (s *Server) mailHandler(c *gin.Context) {
 	err := c.Request.ParseMultipartForm(32 << 20)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	var fileNames []string
-	var filePaths []string
-	headers := c.Request.MultipartForm.File["files[]"]
 
+	emails := strings.Split(c.PostForm("emails"), ",")
+	cc := strings.Split(c.PostForm("cc"), ",")
+	bcc := strings.Split(c.PostForm("bcc"), ",")
+
+	var fileNames, filePaths []string
+	headers := c.Request.MultipartForm.File["file"]
 	for _, header := range headers {
 		file, err := header.Open()
 		if err != nil {
@@ -27,7 +32,7 @@ func (server *Server) filesHandler(c *gin.Context) {
 		}
 		defer file.Close()
 
-		allowedTypes, err := utils.LoadAllowedTypes("for_compressing")
+		allowedTypes, err := utils.LoadAllowedTypes("for_sending")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, errorResponse(err))
 			return
@@ -53,16 +58,18 @@ func (server *Server) filesHandler(c *gin.Context) {
 		filePaths = append(filePaths, tempFile.Name())
 		fileNames = append(fileNames, header.Filename)
 	}
-	zipData, err := server.service.CompressFiles(filePaths, fileNames)
+	params := &service.MailParams{
+		To:        emails,
+		CC:        cc,
+		BCC:       bcc,
+		Subject:   c.PostForm("subject"),
+		Body:      c.PostForm("body"),
+		FilePaths: filePaths,
+		FileNames: fileNames,
+	}
+	err = s.service.SendMessage(params)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
-	}
-
-	c.Header("Content-Type", "application/zip")
-	c.Header("Content-Disposition", "attachment; filename=archive.zip")
-	c.Data(http.StatusOK, "application/zip", *zipData)
-	for _, path := range filePaths {
-		os.Remove(path)
 	}
 }
